@@ -157,6 +157,14 @@ public class ValidContentReadTest {
 		checkRepeated(format, true);
 	}
 
+	@Test
+	public void rgsFile() throws Exception {
+		MappingFormat format = MappingFormat.RGS_FILE;
+		checkDefault(format);
+		checkHoles(format);
+		checkRepeated(format, true);
+	}
+
 	private void checkDefault(MappingFormat format) throws Exception {
 		Path path = TestHelper.MappingDirs.VALID.resolve(TestHelper.getFileName(format));
 

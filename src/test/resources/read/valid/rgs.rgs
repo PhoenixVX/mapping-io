@@ -1,0 +1,16 @@
+.option Application
+
+# Classes
+.class_map a ClassA
+.class_map aa ClassB
+.class_map ab ClassC
+
+# Fields
+.field_map a/a FieldA
+.field_map aa/b FieldB
+.field_map ab/c FieldC
+
+# Methods
+.method_map a/a ()V MethodA
+.method_map aa/b (Ljava/awt/event/KeyEvent;)V MethodB
+.method_map ab/c (La;)V MethodC

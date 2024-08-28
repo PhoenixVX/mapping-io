@@ -274,6 +274,8 @@ public enum MappingFormat {
 					.withSrcNames(FeaturePresence.REQUIRED)
 					.withDstNames(FeaturePresence.REQUIRED)
 					.withSrcDescs(FeaturePresence.REQUIRED))
+			.withFileComments(true)),
+	RGS_FILE("RGS file", "rgs", false, FeatureSetBuilder.create()
 			.withFileComments(true));
 
 	MappingFormat(String name, @Nullable String fileExt, boolean hasWriter, FeatureSetBuilder featureBuilder) {

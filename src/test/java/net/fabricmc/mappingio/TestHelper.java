@@ -71,6 +71,8 @@ public final class TestHelper {
 			return "recaf-simple.txt";
 		case JOBF_FILE:
 			return "jobf.jobf";
+		case RGS_FILE:
+				return "rgs.rgs";
 		default:
 			return null;
 		}

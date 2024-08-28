@@ -26,6 +26,8 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
+import net.fabricmc.mappingio.format.rgs.RgsFileReader;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.mappingio.format.MappingFormat;
@@ -308,6 +310,9 @@ public final class MappingReader {
 		case JOBF_FILE:
 			JobfFileReader.read(reader, visitor);
 			break;
+		case RGS_FILE:
+				RgsFileReader.read(reader, visitor);
+				break;
 		default:
 			throw new IllegalStateException();
 		}
