@@ -1,5 +1,8 @@
 .option Application
 
+# Packages
+.package_map package_1 package1Ns0Rename
+
 # Classes
 .class_map class_2 class1Ns0Rename
 .class_map class_5 class5Ns0Rename
@@ -7,6 +10,7 @@
 .class_map class_13$class_14 class_13$class14Ns0Rename
 .class_map class_17$class_18$class_19 class_17$class_18$class19Ns0Rename
 .class_map class_26$class_27$class_28 class_26$class_27$class28Ns0Rename
+.class_map package_1/class_4 class4Ns0Rename
 
 # Fields
 .field_map class_32/field_2 field2Ns0Rename

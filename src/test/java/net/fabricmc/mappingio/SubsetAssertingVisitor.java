@@ -93,6 +93,9 @@ public class SubsetAssertingVisitor implements FlatMappingVisitor {
 		if (supCls == null) { // SupTree doesn't have this class, ensure the incoming mappings don't have any data for it
 			if (supHasDstNames && subHasDstNames) {
 				String[] subDstNames = supFeatures.hasNamespaces() || dstNames == null ? dstNames : new String[]{dstNames[subNsIfSupNotNamespaced]};
+				if (!isEmpty(subDstNames)) {
+					System.err.println("hi");
+				}
 				assertTrue(isEmpty(subDstNames), "Incoming class not contained in SupTree: " + srcName);
 			}
 

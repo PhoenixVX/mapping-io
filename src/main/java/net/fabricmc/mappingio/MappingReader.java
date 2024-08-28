@@ -120,10 +120,17 @@ public final class MappingReader {
 			return MappingFormat.PROGUARD_FILE;
 		} else if (headerStr.contains("\n\t")) {
 			return MappingFormat.TSRG_FILE;
+		} else if (headerStr.contains(".option")
+				|| headerStr.contains(".class_")
+				|| headerStr.contains(".method_")
+				|| headerStr.contains(".field_")) {
+			return MappingFormat.RGS_FILE;
 		}
 
 		if (fileExt != null) {
 			if (fileExt.equals(MappingFormat.CSRG_FILE.fileExt)) return MappingFormat.CSRG_FILE;
+
+			if (fileExt.equals(MappingFormat.RGS_FILE.fileExt)) return MappingFormat.RGS_FILE;
 		}
 
 		// TODO: Recaf Simple
@@ -311,8 +318,8 @@ public final class MappingReader {
 			JobfFileReader.read(reader, visitor);
 			break;
 		case RGS_FILE:
-				RgsFileReader.read(reader, visitor);
-				break;
+			RgsFileReader.read(reader, visitor);
+			break;
 		default:
 			throw new IllegalStateException();
 		}

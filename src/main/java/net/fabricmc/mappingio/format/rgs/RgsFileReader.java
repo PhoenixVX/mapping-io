@@ -64,7 +64,28 @@ public final class RgsFileReader {
 				boolean classContentVisitPending = false;
 
 				do {
-					if (reader.nextCol(".class_map")) {
+					if (reader.nextCol(".option")) {
+						// TODO: Waiting on the metadata API
+					} else if (reader.nextCol(".attribute")) {
+						// TODO: Waiting on the metadata API
+					} else if (reader.nextCol(".class") || reader.nextCol("!class")) {
+						// TODO: This is used to mark classes as deobfuscated/ignored
+					} else if (reader.nextCol(".method") || reader.nextCol("!method")) {
+						// TODO: This is used to mark methods as deobfuscated/ignored
+					} else if (reader.nextCol(".field") || reader.nextCol("!field")) {
+						// TODO: This is used to mark fields as deobfuscated/ignored
+					} else if (reader.nextCol(".package_map")) {
+						// This is used to map obfuscated packages to deobfuscated packages
+						String srcName = reader.nextCol();
+						if (srcName == null || srcName.isEmpty()) throw new IOException("missing package-name-a in line "+reader.getLineNumber());
+
+						String destName = reader.nextCol();
+						if (destName == null || destName.isEmpty()) throw new IOException("missing package-name-b in line "+reader.getLineNumber());
+					} else if (reader.nextCol(".repackage_map")) {
+						// TODO: This is used to remap packages from one name to another
+					} else if (reader.nextCol(".nowarn")) {
+						// TODO: This is used to disable warnings outputted by RetroGuard
+					} else if (reader.nextCol(".class_map")) {
 						String srcName = reader.nextCol();
 						if (srcName == null || srcName.isEmpty()) throw new IOException("missing class-name-a in line "+reader.getLineNumber());
 
@@ -76,6 +97,15 @@ public final class RgsFileReader {
 						if (visitor.visitClass(srcName)) {
 							String dstName = reader.nextCol();
 							if (dstName == null || dstName.isEmpty()) throw new IOException("missing class-name-b in line "+reader.getLineNumber());
+
+							if (srcName.contains("/")) {
+								int srcSepPos = srcName.lastIndexOf('/');
+								if (srcSepPos <= 0 || srcSepPos == srcName.length() - 1) throw new IOException("invalid class-package-name-a in line "+reader.getLineNumber());
+
+								// TODO: Remove this
+								String packageName = "net/minecraft/src";
+								dstName = packageName + "/" + dstName;
+							}
 
 							visitor.visitDstName(MappedElementKind.CLASS, 0, dstName);
 							classContentVisitPending = true;
