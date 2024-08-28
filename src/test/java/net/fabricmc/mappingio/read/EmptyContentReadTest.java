@@ -30,6 +30,7 @@ import net.fabricmc.mappingio.format.enigma.EnigmaFileReader;
 import net.fabricmc.mappingio.format.intellij.MigrationMapFileReader;
 import net.fabricmc.mappingio.format.jobf.JobfFileReader;
 import net.fabricmc.mappingio.format.proguard.ProGuardFileReader;
+import net.fabricmc.mappingio.format.rgs.RgsFileReader;
 import net.fabricmc.mappingio.format.simple.RecafSimpleFileReader;
 import net.fabricmc.mappingio.format.srg.JamFileReader;
 import net.fabricmc.mappingio.format.srg.SrgFileReader;
@@ -141,5 +142,10 @@ public class EmptyContentReadTest {
 	@Test
 	public void emptyJobfFile() throws Exception {
 		JobfFileReader.read(new StringReader(""), target);
+	}
+
+	@Test
+	public void emptyRgsFile() throws Exception {
+		RgsFileReader.read(new StringReader(""), target);
 	}
 }

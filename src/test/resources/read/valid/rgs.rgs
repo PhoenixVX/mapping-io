@@ -1,16 +1,13 @@
 .option Application
 
 # Classes
-.class_map a ClassA
-.class_map aa ClassB
-.class_map ab ClassC
+.class_map class_1 class1Ns0Rename
+.class_map class_1$class_2 class1Ns0Rename$class2Ns0Rename
+.class_map class_3 class3Ns0Rename
 
 # Fields
-.field_map a/a FieldA
-.field_map aa/b FieldB
-.field_map ab/c FieldC
+.field_map class_1/field_1 field1Ns0Rename
+.field_map class_1$class_2/field_2 field2Ns0Rename
 
 # Methods
-.method_map a/a ()V MethodA
-.method_map aa/b (Ljava/awt/event/KeyEvent;)V MethodB
-.method_map ab/c (La;)V MethodC
+.method_map class_1/method_1 ()I class1Ns0Rename/method1Ns0Rename

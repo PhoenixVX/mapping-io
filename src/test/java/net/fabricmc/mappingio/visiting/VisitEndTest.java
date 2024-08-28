@@ -125,6 +125,12 @@ public class VisitEndTest {
 		check(format);
 	}
 
+	@Test
+	public void rgsFile() throws Exception {
+		MappingFormat format = MappingFormat.RGS_FILE;
+		check(format);
+	}
+
 	private void check(MappingFormat format) throws Exception {
 		checkDir(TestHelper.MappingDirs.DETECTION, format);
 		checkDir(TestHelper.MappingDirs.VALID, format);
