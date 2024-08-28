@@ -275,6 +275,7 @@ public enum MappingFormat {
 					.withDstNames(FeaturePresence.REQUIRED)
 					.withSrcDescs(FeaturePresence.REQUIRED))
 			.withFileComments(true)),
+
 	RGS_FILE("RGS file", "rgs", false, FeatureSetBuilder.create()
 			.withPackages(c -> c
 					.withSrcNames(FeaturePresence.REQUIRED)
@@ -284,14 +285,11 @@ public enum MappingFormat {
 					.withDstNames(FeaturePresence.REQUIRED))
 			.withFields(f -> f
 					.withSrcNames(FeaturePresence.REQUIRED)
-					.withDstNames(FeaturePresence.REQUIRED)
-					.withSrcDescs(FeaturePresence.ABSENT)
-					.withDstDescs(FeaturePresence.ABSENT))
+					.withDstNames(FeaturePresence.REQUIRED))
 			.withMethods(m -> m
 					.withSrcNames(FeaturePresence.REQUIRED)
 					.withDstNames(FeaturePresence.REQUIRED)
-					.withSrcDescs(FeaturePresence.REQUIRED)
-					.withDstDescs(FeaturePresence.ABSENT))
+					.withSrcDescs(FeaturePresence.REQUIRED))
 			.withFileComments(true));
 
 	MappingFormat(String name, @Nullable String fileExt, boolean hasWriter, FeatureSetBuilder featureBuilder) {
