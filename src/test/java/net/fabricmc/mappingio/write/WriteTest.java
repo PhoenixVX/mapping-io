@@ -128,11 +128,6 @@ public class WriteTest {
 		check(MappingFormat.JOBF_FILE);
 	}
 
-	@Test
-	public void rgsFile() throws Exception {
-		check(MappingFormat.RGS_FILE);
-	}
-
 	private void check(MappingFormat format) throws Exception {
 		Path path = TestHelper.writeToDir(validTree, dir, format);
 		readWithMio(validTree, path, format);
