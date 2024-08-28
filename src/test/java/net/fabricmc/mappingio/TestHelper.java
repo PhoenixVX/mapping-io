@@ -72,7 +72,7 @@ public final class TestHelper {
 		case JOBF_FILE:
 			return "jobf.jobf";
 		case RGS_FILE:
-				return "rgs.rgs";
+			return "rgs.rgs";
 		default:
 			return null;
 		}
@@ -101,6 +101,7 @@ public final class TestHelper {
 		case INTELLIJ_MIGRATION_MAP_FILE:
 		case RECAF_SIMPLE_FILE:
 		case JOBF_FILE:
+		case RGS_FILE:
 			return null;
 		default:
 			throw new IllegalArgumentException("Unknown format: " + format);
@@ -132,6 +133,7 @@ public final class TestHelper {
 		case INTELLIJ_MIGRATION_MAP_FILE:
 		case RECAF_SIMPLE_FILE:
 		case JOBF_FILE:
+		case RGS_FILE:
 			return null;
 		default:
 			throw new IllegalArgumentException("Unknown format: " + format);
