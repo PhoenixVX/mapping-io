@@ -10,9 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Overhauled the internal `ColumnFileReader` to behave more consistently
 - Made handling of the `NEEDS_MULTIPLE_PASSES` flag more consistent, reducing memory usage in a few cases
 - Made some internal methods in Enigma and TSRG readers actually private
+- Made all writers for formats which can't represent empty destination names skip such elements entirely, unless mapped child elements are present
 - Added missing `visitElementContent` calls to CSRG and Recaf Simple readers
 - Fixed member mapping merging via tree-API in `MemoryMappingTree`
 - Fixed duplicate mapping definitions not being handled correctly in multiple readers
+- Removed ASM dependency from core project
 
 ## [0.6.1] - 2024-04-15
 - Fixed CSRG and JAM writers sometimes skipping elements whose parents have incomplete destination names
