@@ -16,19 +16,18 @@
 
 package net.fabricmc.mappingio.format.rgs;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.util.Collections;
+import java.util.Set;
+
 import net.fabricmc.mappingio.MappedElementKind;
 import net.fabricmc.mappingio.MappingFlag;
 import net.fabricmc.mappingio.MappingUtil;
 import net.fabricmc.mappingio.MappingVisitor;
 import net.fabricmc.mappingio.format.ColumnFileReader;
-import net.fabricmc.mappingio.format.MappingFormat;
 import net.fabricmc.mappingio.tree.MappingTree;
 import net.fabricmc.mappingio.tree.MemoryMappingTree;
-
-import java.io.IOException;
-import java.io.Reader;
-import java.util.Collections;
-import java.util.Set;
 
 public final class RgsFileReader {
 	private RgsFileReader() {
@@ -61,9 +60,12 @@ public final class RgsFileReader {
 			}
 
 			if (visitor.visitContent()) {
-				boolean classContentVisitPending = false;
+				String lastClassSrcName = null;
+				boolean visitClass = false;
 
 				do {
+					boolean isMethod = false;
+
 					if (reader.nextCol(".option")) {
 						// TODO: Waiting on the metadata API
 					} else if (reader.nextCol(".attribute")) {
@@ -85,76 +87,60 @@ public final class RgsFileReader {
 						// TODO: This is used to remap packages from one name to another
 					} else if (reader.nextCol(".nowarn")) {
 						// TODO: This is used to disable warnings outputted by RetroGuard
-					} else if (reader.nextCol(".class_map")) {
+					} else if (reader.nextCol(".class_map")) { // class: .class_map <src> <dst>
 						String srcName = reader.nextCol();
 						if (srcName == null || srcName.isEmpty()) throw new IOException("missing class-name-a in line "+reader.getLineNumber());
 
-						if (classContentVisitPending) {
-							visitor.visitElementContent(MappedElementKind.CLASS);
-							classContentVisitPending = false;
-						}
+						lastClassSrcName = srcName;
+						visitClass = visitor.visitClass(srcName);
 
-						if (visitor.visitClass(srcName)) {
+						if (visitClass) {
 							String dstName = reader.nextCol();
 							if (dstName == null || dstName.isEmpty()) throw new IOException("missing class-name-b in line "+reader.getLineNumber());
 
-							if (srcName.contains("/")) {
-								int srcSepPos = srcName.lastIndexOf('/');
-								if (srcSepPos <= 0 || srcSepPos == srcName.length() - 1) throw new IOException("invalid class-package-name-a in line "+reader.getLineNumber());
-
-								// TODO: Remove this
-								String packageName = "net/minecraft/src";
-								dstName = packageName + "/" + dstName;
-							}
-
 							visitor.visitDstName(MappedElementKind.CLASS, 0, dstName);
-							classContentVisitPending = true;
+							visitClass = visitor.visitElementContent(MappedElementKind.CLASS);
 						}
-					} else if (reader.nextCol(".method_map")) {
-						String srcName = reader.nextCol();
-						if (srcName == null) throw new IOException("missing class-/name-a in line "+reader.getLineNumber());
+					} else if ((isMethod = reader.nextCol(".method_map")) || reader.nextCol(".field_map")) { // method: .method_map <cls-a><name-a> <desc-a> <name-b> or field: .field_map <cls-a><name-a> <name-b>
+						String src = reader.nextCol();
+						if (src == null) throw new IOException("missing class-/member-name-a in line "+reader.getLineNumber());
 
-						String srcDesc = reader.nextCol();
-						if (srcDesc == null || srcDesc.isEmpty()) throw new IOException("missing desc in line "+reader.getLineNumber());
+						int srcSepPos = src.lastIndexOf('/');
+						if (srcSepPos <= 0 || srcSepPos == src.length() - 1) throw new IOException("invalid class-/member-name-a in line "+reader.getLineNumber());
 
-						String dstName = reader.nextCol();
-						if (dstName == null) throw new IOException("missing class-/name-b in line "+reader.getLineNumber());
+						String srcDesc = null;
+						String dstName;
 
-						if (classContentVisitPending) {
-							classContentVisitPending = false;
-							if (!visitor.visitElementContent(MappedElementKind.CLASS)) continue;
-						}
-
-						if (visitor.visitMethod(srcName, srcDesc)) {
-							MappedElementKind kind = MappedElementKind.METHOD;
-							visitor.visitDstName(kind, 0, dstName);
-							visitor.visitElementContent(kind);
-						}
-					} else if (reader.nextCol(".field_map")) {
-						String srcName = reader.nextCol();
-						if (srcName == null) throw new IOException("missing class-/name-a in line "+reader.getLineNumber());
-
-						String dstName = reader.nextCol();
-						if (dstName == null) throw new IOException("missing class-/name-b in line "+reader.getLineNumber());
-
-						if (classContentVisitPending) {
-							classContentVisitPending = false;
-							if (!visitor.visitElementContent(MappedElementKind.CLASS)) continue;
+						if (isMethod) {
+							srcDesc = reader.nextCol();
+							if (srcDesc == null || srcDesc.isEmpty()) throw new IOException("missing desc-a in line "+reader.getLineNumber());
 						}
 
-						if (visitor.visitField(srcName, null)) {
-							MappedElementKind kind = MappedElementKind.FIELD;
-							visitor.visitDstName(kind, 0, dstName);
-							visitor.visitElementContent(kind);
+						dstName = reader.nextCol();
+						if (dstName == null) throw new IOException("missing member-name-b in line "+reader.getLineNumber());
+
+						String srcOwner = src.substring(0, srcSepPos);
+
+						if (!srcOwner.equals(lastClassSrcName)) {
+							lastClassSrcName = srcOwner;
+							visitClass = visitor.visitClass(srcOwner) && visitor.visitElementContent(MappedElementKind.CLASS);
+						}
+
+						if (visitClass) {
+							String srcName = src.substring(srcSepPos + 1);
+
+							if (!isMethod && visitor.visitField(srcName, srcDesc)) {
+								visitor.visitDstName(MappedElementKind.FIELD, 0, dstName);
+								visitor.visitElementContent(MappedElementKind.FIELD);
+							} else if (isMethod && visitor.visitMethod(srcName, srcDesc)) {
+								visitor.visitDstName(MappedElementKind.METHOD, 0, dstName);
+								visitor.visitElementContent(MappedElementKind.METHOD);
+							}
 						}
 					} else {
 						System.err.println("Unrecognized RGS entry in line "+reader.getLineNumber());
 					}
 				} while (reader.nextLine(0));
-
-				if (classContentVisitPending) {
-					visitor.visitElementContent(MappedElementKind.CLASS);
-				}
 			}
 
 			if (visitor.visitEnd()) break;

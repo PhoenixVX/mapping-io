@@ -26,8 +26,6 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
-import net.fabricmc.mappingio.format.rgs.RgsFileReader;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.mappingio.format.MappingFormat;
@@ -36,6 +34,7 @@ import net.fabricmc.mappingio.format.enigma.EnigmaFileReader;
 import net.fabricmc.mappingio.format.intellij.MigrationMapFileReader;
 import net.fabricmc.mappingio.format.jobf.JobfFileReader;
 import net.fabricmc.mappingio.format.proguard.ProGuardFileReader;
+import net.fabricmc.mappingio.format.rgs.RgsFileReader;
 import net.fabricmc.mappingio.format.simple.RecafSimpleFileReader;
 import net.fabricmc.mappingio.format.srg.JamFileReader;
 import net.fabricmc.mappingio.format.srg.SrgFileReader;
@@ -159,8 +158,7 @@ public final class MappingReader {
 	}
 
 	private static boolean isEmptyOrStartsWithHash(String string) {
-		if (string.isEmpty() || string.startsWith("#")) return true;
-		return false;
+		return string.isEmpty() || string.startsWith("#");
 	}
 
 	public static List<String> getNamespaces(Path file) throws IOException {
