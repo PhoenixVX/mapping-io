@@ -145,15 +145,12 @@ public final class SrgFileReader {
 								continue;
 							}
 
+							visitor.visitDstName(MappedElementKind.CLASS, 0, dstOwner);
+							lastClassDstName = dstOwner;
 							classContentVisitPending = true;
 						}
 
 						lastClassSrcName = srcOwner;
-
-						if (classVisitRequired) {
-							visitor.visitDstName(MappedElementKind.CLASS, 0, dstOwner);
-							lastClassDstName = dstOwner;
-						}
 
 						if (classContentVisitPending) {
 							classContentVisitPending = false;
@@ -166,7 +163,11 @@ public final class SrgFileReader {
 								|| !isMethod && visitor.visitField(srcName, srcDesc)) {
 							MappedElementKind kind = isMethod ? MappedElementKind.METHOD : MappedElementKind.FIELD;
 							visitor.visitDstName(kind, 0, dstName.substring(dstSepPos + 1));
-							visitor.visitDstDesc(kind, 0, dstDesc);
+
+							if (isMethod) {
+								visitor.visitDstDesc(kind, 0, dstDesc);
+							}
+
 							visitor.visitElementContent(kind);
 						}
 					}
